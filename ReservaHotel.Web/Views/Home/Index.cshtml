@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "Panel principal";
+    var ultimas = ViewBag.UltimasReservas as List<Reserva> ?? new();
+}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">PANEL DE CONTROL</p>
+        <h1>Bienvenido al sistema</h1>
+        <p class="muted">Administra clientes, habitaciones y reservas desde un solo lugar.</p>
+    </div>
+    <a class="btn btn-primary" asp-controller="Reservas" asp-action="Create">＋ Generar reserva</a>
+</section>
+
+<section class="stats-grid">
+    <article class="stat-card"><span>Clientes activos</span><strong>@ViewBag.Clientes</strong></article>
+    <article class="stat-card"><span>Habitaciones</span><strong>@ViewBag.Habitaciones</strong></article>
+    <article class="stat-card"><span>Disponibles</span><strong class="green">@ViewBag.Disponibles</strong></article>
+    <article class="stat-card"><span>Reservadas</span><strong class="orange">@ViewBag.Reservadas</strong></article>
+    <article class="stat-card"><span>Reservas registradas</span><strong>@ViewBag.Reservas</strong></article>
+</section>
+
+<section class="panel">
+    <div class="panel-heading">
+        <div><p class="eyebrow">ACTIVIDAD</p><h2>Últimas reservas</h2></div>
+        <a asp-controller="Reservas" asp-action="Index" class="text-link">Ver todas →</a>
+    </div>
+    @if (ultimas.Count == 0)
+    {
+        <p class="empty-state">Todavía no hay reservas. Selecciona «Generar reserva» para registrar la primera.</p>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>N.º reserva</th><th>Cliente</th><th>Llegada</th><th>Salida</th><th>Total</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var r in ultimas)
+                {
+                    <tr>
+                        <td><strong>@r.NumeroReserva</strong></td>
+                        <td>@r.Cliente?.NombreCompleto</td>
+                        <td>@r.FechaLlegada.ToString("dd/MM/yyyy")</td>
+                        <td>@r.FechaSalida.ToString("dd/MM/yyyy")</td>
+                        <td>S/ @r.MontoTotal.ToString("N2")</td>
+                        <td><a class="text-link" asp-controller="Reservas" asp-action="Details" asp-route-id="@r.Id">Detalle</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

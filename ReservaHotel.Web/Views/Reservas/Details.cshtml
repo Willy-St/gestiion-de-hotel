@@ -1,0 +1,40 @@
+@model Reserva
+@{
+    ViewData["Title"] = "Detalle de reserva";
+}
+<section class="page-heading">
+    <div><p class="eyebrow">RESERVA REGISTRADA</p><h1>@Model.NumeroReserva</h1><p class="muted">La reserva se guardó correctamente.</p></div>
+    <a class="btn btn-outline" asp-action="Index">← Volver a reservas</a>
+</section>
+<section class="panel">
+    <div class="success-banner">✓ Reserva generada</div>
+    <div class="detail-grid">
+        <div><span>Cliente</span><strong>@Model.Cliente?.NombreCompleto</strong></div>
+        <div><span>Recepcionista</span><strong>@Model.Recepcionista?.Nombre</strong></div>
+        <div><span>Fecha de llegada</span><strong>@Model.FechaLlegada.ToString("dd/MM/yyyy")</strong></div>
+        <div><span>Fecha de salida</span><strong>@Model.FechaSalida.ToString("dd/MM/yyyy")</strong></div>
+        <div><span>Días</span><strong>@Model.CantidadDias</strong></div>
+        <div><span>Fecha de registro</span><strong>@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</strong></div>
+    </div>
+    <h2 class="section-title">Habitaciones incluidas</h2>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Habitación</th><th>Tipo</th><th>Huésped</th><th>Costo por día</th><th>Días</th><th>Importe</th></tr></thead>
+            <tbody>
+            @foreach (var d in Model.Detalles)
+            {
+                <tr>
+                    <td>@d.Habitacion?.NumeroHabitacion</td>
+                    <td>@d.Habitacion?.Tipo</td>
+                    <td>@d.NombreHuesped</td>
+                    <td>S/ @d.CostoDia.ToString("N2")</td>
+                    <td>@d.CantidadDias</td>
+                    <td>S/ @d.MontoPagar.ToString("N2")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="total-line"><span>Monto total</span><strong>S/ @Model.MontoTotal.ToString("N2")</strong></div>
+    <p class="helper">Las habitaciones incluidas cambiaron automáticamente al estado «Reservado».</p>
+</section>

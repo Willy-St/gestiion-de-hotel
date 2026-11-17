@@ -1,0 +1,21 @@
+@model List<Cliente>
+@{
+    ViewData["Title"] = "Clientes";
+}
+<section class="page-heading">
+    <div><p class="eyebrow">REGISTROS</p><h1>Clientes</h1><p class="muted">Clientes disponibles para realizar reservas.</p></div>
+    <a class="btn btn-primary" asp-action="Create">＋ Agregar cliente</a>
+</section>
+<section class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Código</th><th>Nombres</th><th>Apellidos</th><th>Estado</th></tr></thead>
+            <tbody>
+            @foreach (var c in Model)
+            {
+                <tr><td><strong>@c.Codigo</strong></td><td>@c.Nombres</td><td>@c.Apellidos</td><td><span class="pill @(c.Activo ? "green-pill" : "gray-pill")">@(c.Activo ? "Activo" : "Inactivo")</span></td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

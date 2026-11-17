@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Reserva Hotel</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" asp-controller="Home" asp-action="Index">RESERVA<span>HOTEL</span></a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <nav class="nav-links">
+                <a asp-controller="Home" asp-action="Index">Inicio</a>
+                <a asp-controller="Reservas" asp-action="Index">Reservas</a>
+                <a asp-controller="Clientes" asp-action="Index">Clientes</a>
+                <a asp-controller="Habitaciones" asp-action="Index">Habitaciones</a>
+            </nav>
+            <div class="user-area">
+                <span>@User.Identity.Name</span>
+                <form asp-controller="Cuenta" asp-action="Logout" method="post">
+                    <button class="btn btn-outline btn-small" type="submit">Salir</button>
+                </form>
+            </div>
+        }
+    </header>
+
+    <main class="container">
+        @if (TempData["Exito"] is string exito)
+        {
+            <div class="alert success">@exito</div>
+        }
+        @if (TempData["Error"] is string error)
+        {
+            <div class="alert danger">@error</div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="footer">Sistema de Reserva de Habitaciones · Proyecto académico</footer>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

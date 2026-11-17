@@ -1,0 +1,22 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = "_Layout";
+}
+<div class="login-wrap">
+    <section class="login-card">
+        <p class="eyebrow">SISTEMA HOTELERO</p>
+        <h1>Iniciar sesión</h1>
+        <p class="muted">Ingresa con la cuenta de recepcionista para administrar las reservas.</p>
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+            <label asp-for="Usuario"></label><input asp-for="Usuario" class="input" autocomplete="username" />
+            <span asp-validation-for="Usuario" class="field-error"></span>
+            <label asp-for="Contrasena">Contraseña</label><input asp-for="Contrasena" class="input" autocomplete="current-password" />
+            <span asp-validation-for="Contrasena" class="field-error"></span>
+            <button class="btn btn-primary btn-large full-width" type="submit">Ingresar</button>
+        </form>
+        <div class="demo-credentials"><strong>Cuenta de prueba</strong><br />Usuario: recepcionista<br />Contraseña: Hotel123*</div>
+    </section>
+</div>

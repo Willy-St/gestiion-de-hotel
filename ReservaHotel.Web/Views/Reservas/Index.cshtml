@@ -1,0 +1,37 @@
+@model List<Reserva>
+@{
+    ViewData["Title"] = "Reservas";
+}
+<section class="page-heading">
+    <div><p class="eyebrow">GESTIÓN</p><h1>Reservas</h1><p class="muted">Consulta las reservas registradas.</p></div>
+    <a class="btn btn-primary" asp-action="Create">＋ Generar reserva</a>
+</section>
+<section class="panel">
+    @if (!Model.Any())
+    {
+        <p class="empty-state">No hay reservas registradas.</p>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>N.º reserva</th><th>Cliente</th><th>Fecha de llegada</th><th>Fecha de salida</th><th>Días</th><th>Habitaciones</th><th>Total</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td><strong>@r.NumeroReserva</strong></td>
+                        <td>@r.Cliente?.NombreCompleto</td>
+                        <td>@r.FechaLlegada.ToString("dd/MM/yyyy")</td>
+                        <td>@r.FechaSalida.ToString("dd/MM/yyyy")</td>
+                        <td>@r.CantidadDias</td>
+                        <td>@r.Detalles.Count</td>
+                        <td>S/ @r.MontoTotal.ToString("N2")</td>
+                        <td><a class="text-link" asp-action="Details" asp-route-id="@r.Id">Ver</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

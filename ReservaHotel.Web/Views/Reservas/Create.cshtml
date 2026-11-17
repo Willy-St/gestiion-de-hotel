@@ -1,0 +1,100 @@
+@model ReservaCreateViewModel
+@{
+    ViewData["Title"] = "Generar reserva";
+}
+<section class="page-heading">
+    <div><p class="eyebrow">NUEVA OPERACIÓN</p><h1>Generar reserva</h1><p class="muted">Completa los datos del cliente, las fechas y las habitaciones.</p></div>
+    <a class="btn btn-outline" asp-action="Index">← Volver</a>
+</section>
+
+<form asp-action="Create" method="post" id="bookingForm">
+    <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+    <div class="form-grid">
+        <section class="panel">
+            <div class="panel-heading"><h2>1. Datos del cliente</h2><a class="text-link" asp-controller="Clientes" asp-action="Create">＋ Agregar cliente</a></div>
+            @if (!Model.Clientes.Any())
+            {
+                <div class="alert warning">No hay clientes registrados. Primero agrega un cliente.</div>
+            }
+            <label asp-for="ClienteId"></label>
+            <select asp-for="ClienteId" class="input" asp-items="@(new SelectList(Model.Clientes, "Id", "NombreCompleto"))">
+                <option value="">Selecciona un cliente</option>
+            </select>
+            <span asp-validation-for="ClienteId" class="field-error"></span>
+        </section>
+
+        <section class="panel">
+            <h2>2. Fechas de hospedaje</h2>
+            <div class="two-columns">
+                <div><label asp-for="FechaLlegada"></label><input asp-for="FechaLlegada" class="input" type="date" /><span asp-validation-for="FechaLlegada" class="field-error"></span></div>
+                <div><label asp-for="FechaSalida"></label><input asp-for="FechaSalida" class="input" type="date" /><span asp-validation-for="FechaSalida" class="field-error"></span></div>
+            </div>
+            <p class="helper" id="daysInfo">Selecciona las fechas para calcular los días.</p>
+        </section>
+    </div>
+
+    <section class="panel">
+        <div class="panel-heading"><div><h2>3. Seleccionar habitaciones</h2><p class="muted">Marca una o varias habitaciones disponibles.</p></div><span class="pill green-pill">@Model.Habitaciones.Count disponibles</span></div>
+        @if (!Model.Habitaciones.Any())
+        {
+            <div class="alert warning">No hay habitaciones disponibles en este momento.</div>
+        }
+        else
+        {
+            <div class="room-grid">
+            @foreach (var h in Model.Habitaciones)
+            {
+                <label class="room-card">
+                    <div class="room-card-top">
+                        <input type="checkbox" name="HabitacionesSeleccionadas" value="@h.Id" class="room-check" data-price="@h.CostoDia" />
+                        <strong>Habitación @h.NumeroHabitacion</strong>
+                        <span class="pill green-pill">Disponible</span>
+                    </div>
+                    <p>@h.Tipo</p>
+                    <strong class="price">S/ @h.CostoDia.ToString("N2") <small>/ día</small></strong>
+                    <input class="input guest-input" type="text" name="Huespedes[@h.Id]" placeholder="Nombre del huésped de esta habitación" />
+                </label>
+            }
+            </div>
+        }
+        <p class="field-error">@Html.ValidationMessage("HabitacionesSeleccionadas")</p>
+    </section>
+
+    <section class="summary-bar">
+        <div><span class="muted">Días de hospedaje</span><strong id="daysTotal">1</strong></div>
+        <div><span class="muted">Habitaciones seleccionadas</span><strong id="roomsTotal">0</strong></div>
+        <div><span class="muted">Total estimado</span><strong class="total" id="grandTotal">S/ 0.00</strong></div>
+        <button type="submit" class="btn btn-primary btn-large" @(Model.Clientes.Any() && Model.Habitaciones.Any() ? "" : "disabled")>Grabar reserva</button>
+    </section>
+</form>
+
+@section Scripts {
+<script>
+(() => {
+    const arrival = document.getElementById('FechaLlegada');
+    const departure = document.getElementById('FechaSalida');
+    const checks = [...document.querySelectorAll('.room-check')];
+    const daysInfo = document.getElementById('daysInfo');
+    const daysTotal = document.getElementById('daysTotal');
+    const roomsTotal = document.getElementById('roomsTotal');
+    const grandTotal = document.getElementById('grandTotal');
+
+    function refresh() {
+        const a = new Date(arrival.value + 'T00:00:00');
+        const d = new Date(departure.value + 'T00:00:00');
+        let days = Math.round((d - a) / 86400000);
+        if (!Number.isFinite(days) || days < 1) days = 0;
+        const selected = checks.filter(x => x.checked);
+        const total = selected.reduce((sum, x) => sum + Number(x.dataset.price) * days, 0);
+        daysInfo.textContent = days > 0 ? `Estadía: ${days} día(s).` : 'La fecha de salida debe ser posterior a la llegada.';
+        daysTotal.textContent = days;
+        roomsTotal.textContent = selected.length;
+        grandTotal.textContent = 'S/ ' + total.toFixed(2);
+    }
+    arrival.addEventListener('change', refresh);
+    departure.addEventListener('change', refresh);
+    checks.forEach(x => x.addEventListener('change', refresh));
+    refresh();
+})();
+</script>
+}

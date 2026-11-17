@@ -1,0 +1,34 @@
+@model List<Habitacion>
+@{
+    ViewData["Title"] = "Habitaciones";
+}
+<section class="page-heading"><div><p class="eyebrow">ALOJAMIENTO</p><h1>Habitaciones</h1><p class="muted">Consulta disponibilidad y estado de las habitaciones.</p></div></section>
+<section class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Número</th><th>Tipo</th><th>Costo por día</th><th>Estado</th><th>Actualizar estado (pruebas)</th></tr></thead>
+            <tbody>
+            @foreach (var h in Model)
+            {
+                <tr>
+                    <td><strong>@h.NumeroHabitacion</strong></td><td>@h.Tipo</td><td>S/ @h.CostoDia.ToString("N2")</td>
+                    <td><span class="pill @(h.Estado == EstadoHabitacion.Disponible ? "green-pill" : h.Estado == EstadoHabitacion.Reservado ? "orange-pill" : "gray-pill")">@h.Estado</span></td>
+                    <td>
+                        <form asp-action="CambiarEstado" method="post" class="inline-form">
+                            <input type="hidden" name="id" value="@h.Id" />
+                            <select class="input input-small" name="estado">
+                                @foreach (var estado in EstadoHabitacion.Todos)
+                                {
+                                    <option value="@estado" selected="@(estado == h.Estado)">@estado</option>
+                                }
+                            </select>
+                            <button class="btn btn-outline btn-small" type="submit">Guardar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <p class="helper">La actualización manual del estado está disponible para pruebas académicas. Al grabar una reserva, el sistema cambia las habitaciones seleccionadas a «Reservado» automáticamente.</p>
+</section>
