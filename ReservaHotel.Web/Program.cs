@@ -39,7 +39,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Crea las tablas y los datos de demostración la primera vez que se inicia.
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<HotelDbContext>();
